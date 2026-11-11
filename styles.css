@@ -927,6 +927,126 @@ html.dark .compare-good {
     opacity: 0.75;
 }
 
+/* Blackboard (Embabel): the typed objects of one agent run sit on a dashed
+   board, an action (pill) above it only reads and writes the board, and the
+   planner (pill) below it only reads. Same visual language and `$clicks`
+   binding as the GOAP graph. The gradient and markers use per-diagram `bb-`
+   ids set by attribute, because Slidev keeps neighbouring slides mounted and
+   `.goap-hl` hard-codes the GOAP slide's gradient id. An object that does
+   not exist yet is hidden and rises in when the action writes it. */
+.blackboard-graph {
+    display: block;
+    width: 100%;
+    max-width: 84rem;
+    margin: 3rem auto 0;
+}
+
+.blackboard-graph text {
+    fill: currentColor;
+    font-family: var(--slidev-code-font-family, monospace);
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.bb-board rect {
+    fill: color-mix(in srgb, var(--fundamentals-purple) 4%, var(--diagram-surface));
+    stroke: var(--fundamentals-purple);
+    stroke-width: 2;
+    stroke-dasharray: 12 8;
+}
+
+.bb-board text {
+    fill: var(--fundamentals-purple) !important;
+    font-size: 18px !important;
+    letter-spacing: 0.04em;
+}
+
+.bb-object {
+    transition: opacity 500ms ease, transform 500ms ease;
+}
+
+.bb-object rect {
+    fill: color-mix(in srgb, var(--fundamentals-purple) 16%, var(--diagram-surface));
+    stroke: var(--fundamentals-purple);
+    stroke-width: 3;
+}
+
+.bb-object.is-hidden {
+    opacity: 0;
+    transform: translateY(14px);
+}
+
+/* The goal type is known up front but not on the board yet: dashed pink,
+   like the goal box of the GOAP graph. */
+.bb-goal rect {
+    fill: var(--diagram-surface);
+    stroke: var(--fundamentals-pink);
+    stroke-width: 2;
+    stroke-dasharray: 10 6;
+}
+
+.bb-actor rect {
+    fill: color-mix(in srgb, var(--fundamentals-purple) 7%, var(--diagram-surface));
+    stroke: var(--graphic-card-border);
+    stroke-width: 2;
+    transition: stroke 400ms ease, fill 400ms ease;
+}
+
+.bb-actor.is-on rect {
+    fill: color-mix(in srgb, var(--fundamentals-pink) 12%, var(--diagram-surface));
+    stroke: var(--fundamentals-pink);
+    stroke-width: 3;
+}
+
+.bb-base {
+    fill: none;
+    stroke: color-mix(in srgb, currentColor 30%, transparent);
+    stroke-width: 3;
+}
+
+.bb-hl {
+    fill: none;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 700ms ease;
+}
+
+.bb-edge.is-on .bb-hl {
+    stroke-dashoffset: 0;
+}
+
+.bb-edge > text {
+    font-size: 18px !important;
+    opacity: 0.55;
+    transition: opacity 400ms ease;
+}
+
+.bb-edge.is-on > text {
+    opacity: 1;
+}
+
+.bb-head {
+    fill: color-mix(in srgb, currentColor 30%, transparent);
+}
+
+.bb-head-on {
+    fill: var(--fundamentals-pink);
+}
+
+.bb-next {
+    opacity: 0;
+    transition: opacity 400ms ease;
+    fill: var(--fundamentals-purple) !important;
+    font-size: 22px !important;
+    font-weight: 800 !important;
+}
+
+.bb-next.is-on {
+    opacity: 1;
+}
+
 /* Koog graphs: hand-drawn SVG in the same visual language as the GOAP graph
    instead of Mermaid, whose auto layout crossed the back edges through the
    boxes and could not animate. Nodes are tinted boxes, edges a muted base

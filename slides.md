@@ -31,23 +31,19 @@ src: ./pages/01-introduction.md
 ---
 
 ---
-src: ./pages/02-java-will-last.md
+src: ./pages/02-demo.md
 ---
 
 ---
-src: ./pages/03-demo.md
+src: ./pages/03-spring-ai.md
 ---
 
 ---
-src: ./pages/04-spring-ai.md
+src: ./pages/04-embabel.md
 ---
 
 ---
-src: ./pages/05-embabel.md
----
-
----
-src: ./pages/06-koog.md
+src: ./pages/05-koog.md
 ---
 
 ---

@@ -194,43 +194,10 @@ class TimingAdvisor : CallAdvisor {
 - Servlet filter, interceptor, aspect
   - before, chain, after
 - chain.nextCall - everything downstream incl. the model
-- Real uses: chat memory, RAG, guardrails, logging, tool loop
+- Real uses: session memory, RAG, guardrails, logging, tool loop
 - SimpleLoggerAdvisor - same shape
 - Log line shortened
 -->
-
----
-class: graphic-slide
----
-
-<div class="pillar-tag"><ph-chart-line-up />observability</div>
-
-# Every review shows up as a trace without extra code
-
-<div class="trace">
-  <div class="trace-span" style="--width: 100%"><span>spring.ai.chat.client</span><i></i></div>
-  <div class="trace-span" style="--depth: 1; --start: 1%; --width: 98%"><span>spring.ai.advisor</span><i></i></div>
-  <div v-click class="trace-span reveal" style="--depth: 2; --start: 2%; --width: 30%"><span>gen_ai.client.operation</span><i></i></div>
-  <div v-click class="trace-span trace-tool reveal" style="--depth: 2; --start: 33%; --width: 3%"><span>spring.ai.tool getTrip</span><i></i></div>
-  <div v-click class="trace-span trace-tool reveal" style="--depth: 2; --start: 37%; --width: 2%"><span>spring.ai.tool listPolicies</span><i></i></div>
-  <div v-click class="trace-span reveal" style="--depth: 2; --start: 40%; --width: 58%"><span>gen_ai.client.operation</span><i></i></div>
-</div>
-
-<!--
-- Micrometer observations out of the box
-  - ChatClient span, one per advisor
-- [click] Model call - gen_ai.client.operation
-  - OTel GenAI conventions, model name, tokens
-- [click] getTrip
-- [click] listPolicies
-  - our methods, fast and cheap
-- [click] Second model call - the draft
-- Time spent waiting on the model
-  - virtual threads
-- gen_ai.client.token.usage metric -> Prometheus, Grafana
-- Shape real, timings illustrative
--->
-
 
 ---
 class: code-slide code-dense
@@ -238,17 +205,18 @@ class: code-slide code-dense
 
 <div class="pillar-tag"><ph-books />context</div>
 
-# Chat memory is one more advisor, the history lives in a table
+# Memory is a session now: advisors over an append-only event log
 
 ```kotlin no-compile
-val memory = MessageWindowChatMemory.builder()
-    .chatMemoryRepository(jdbcChatMemoryRepository)
-    .maxMessages(20)
+val chatClient = ChatClient.builder(chatModel)
+    .defaultAdvisors(SessionAdvisors.builder(sessionService)
+        .compaction(TurnCountTrigger(20),
+            WindowCompactionStrategy.builder().lastTurns(10).build())
+        .build())
     .build()
 
 chatClient.prompt()
-    .advisors(MessageChatMemoryAdvisor.builder(memory).build())
-    .advisors { it.param(ChatMemory.CONVERSATION_ID, "trip-$tripId") }
+    .advisors(SessionAdvisors.session("trip-$tripId"))
     .user("Why was my trip rejected?")
     .call()
     .content()
@@ -256,18 +224,24 @@ chatClient.prompt()
 
 <!--
 - Not in the demo - first traveler question: why?
-- Advisor, same before / after shape
-  - load conversation before, append after
-- CONVERSATION_ID - one per trip
-- MessageWindowChatMemory - last 20 messages
-  - system messages kept
-  - compression = window or own ChatMemory
-- Pluggable repository
-  - in memory default, JDBC: Postgres, MySQL, H2
-  - Cassandra, Neo4j, Mongo starters
-- Long term: VectorStoreChatMemoryAdvisor
+- Spring AI 2.1 - Session replaces ChatMemory
+  - ChatMemory deprecated, removed in 3.0
+- Session = append-only event log
+  - every message an event, nothing overwritten
+- SessionAdvisors - two advisors, same before / after shape
+  - turn advisor: create session, compact
+  - memory advisor: load view per model call, append after
+- Session id on every call - one per trip
+  - created on first use
+- Compaction instead of a message window
+  - 20 turns -> keep last 10
+  - cut on turn boundaries, tool calls stay with their turn
+  - log kept, only the view shrinks
+  - or summarize: ChatModelSummarizer
+- Storage
+  - in memory, JDBC: Postgres, MySQL, MariaDB, H2
+  - JDBC starter auto-configures SessionService
 -->
-
 
 ---
 class: code-slide

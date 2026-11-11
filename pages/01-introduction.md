@@ -50,14 +50,39 @@ class: graphic-slide
 -->
 
 ---
+class: graphic-slide
+---
+
+# Most AI projects fail because they automate the wrong thing
+
+<div class="compare">
+  <div class="compare-card compare-bad">
+    <ph-chats-circle class="compare-icon" />
+    <span>replacing human interaction</span>
+  </div>
+  <div v-click class="compare-card compare-good reveal">
+    <ph-arrows-clockwise class="compare-icon" />
+    <span>boring, repetitive, time-consuming processes</span>
+  </div>
+</div>
+
+<!--
+- Most AI projects fail
+- Automating human interaction = usually wrong
+  - chatbots replacing support, sales, advisors
+- [click] Boring, repetitive, time-consuming processes
+- Legacy processes already in Java
+- Need all six tiles from the start
+-->
+
+---
 layout: intro
 class: agenda
 ---
 
 # What we'll cover
 
-1. Why python was first and why Java will last
-2. The demo: reviewing business trips
-3. Spring AI
-4. Embabel
-5. Koog
+1. The demo: reviewing business trips
+2. Spring AI
+3. Embabel
+4. Koog

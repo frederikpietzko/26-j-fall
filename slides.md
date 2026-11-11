@@ -66,16 +66,10 @@ kodee:
     <img class="qa-qr" src="/assets/qrcode.svg" alt="QR code to the slides" />
     <p class="qa-qr-caption">Slides &amp; code</p>
   </div>
-  <div class="qa-qr-block">
-    <img class="qa-qr" src="/assets/java-is-coming-for-pythons-lunch-the-rise-of-jvm_pietzko_1221500_feedback-code-cropped.png" alt="QR code to the session feedback" />
-    <p class="qa-qr-caption">Feedback</p>
-  </div>
 </div>
 
 <!--
-- Left: slides + demo code
+- Slides + demo code
   - Spring AI, Embabel, Koog variants
-- Right: session feedback
-  - one minute of feedback
 -->
 

@@ -273,14 +273,11 @@ html.dark {
 }
 
 /* Closing Q&A slide (`class: section-intro qa-slide`): the headline keeps the
-   section-opener look on the left, the two QR codes (slides, feedback) sit
-   side by side in the middle of the slide, clear of the headline and of the
+   section-opener look on the left, the slides QR code sits
+   in the middle of the slide, clear of the headline and of the
    corner Kodee.
-   Both codes are black on white, so each gets its own white plate to stay
-   scannable in dark mode. The assets are cropped to a ~2 module quiet zone
-   (SVG via its viewBox, the feedback PNG as a `-cropped` copy without the
-   baked-in title) so both codes render at the same visual size; the plate's
-   padding restores the rest of the quiet zone. */
+   The code is black on white, so it gets its own white plate to stay
+   scannable in dark mode. */
 .qa-slide {
     /* Only "Q&A" lives in the text column. */
     --cover-text-width: 40%;
